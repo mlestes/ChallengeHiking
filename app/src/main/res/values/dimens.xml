@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="std_dp">16dp</dimen>
+    <dimen name="pb_dp">120dp</dimen>
+    <dimen name="fragment_ht">600dp</dimen>
+    <dimen name="null_dp">0dp</dimen>
+    <dimen name="btn_wt">120dp</dimen>
+    <dimen name="div_dp">32dp</dimen>
+    <dimen name="input_dp">240dp</dimen>
+    <dimen name="top_input_dp">64dp</dimen>
+</resources>

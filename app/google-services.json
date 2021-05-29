@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "628185535592",
+    "project_id": "challenge-hiking",
+    "storage_bucket": "challenge-hiking.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628185535592:android:062fcfa894e287c144d7dd",
+        "android_client_info": {
+          "package_name": "com.coolcats.challengehiking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628185535592-cc6oacomof4rnasc7s5lspfuo38cj6ge.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coolcats.challengehiking",
+            "certificate_hash": "20121d0d96f068644254ab2729f9d9fc1f721f35"
+          }
+        },
+        {
+          "client_id": "628185535592-h31kdh333k8u542jajfpabbfh75nljrh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPSTA88Y4m2Bqe2lizvgPRZZp1tWDpLsU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "628185535592-h31kdh333k8u542jajfpabbfh75nljrh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Challenge Hiking</string>
+    <string name="submit">Submit</string>
+    <string name="password">Password</string>
+    <string name="e_mail">E-mail</string>
+    <string name="login">Login</string>
+    <string name="new_user">New User</string>
+    <string name="new_user_sign_up">New User Sign-up</string>
+    <string name="confirm_e_mail">Confirm E-mail</string>
+    <string name="confirm_password">Confirm Password</string>
+</resources>
