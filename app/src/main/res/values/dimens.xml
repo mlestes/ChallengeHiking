@@ -8,4 +8,6 @@
     <dimen name="div_dp">32dp</dimen>
     <dimen name="input_dp">240dp</dimen>
     <dimen name="top_input_dp">64dp</dimen>
+    <dimen name="img_ht">120dp</dimen>
+    <dimen name="img_wt">240dp</dimen>
 </resources>

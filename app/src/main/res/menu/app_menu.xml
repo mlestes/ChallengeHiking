@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/account">
+        <menu>
+            <item android:id="@+id/view_acc_info"
+                  android:title="@string/view_information"/>
+            <item android:id="@+id/reset_pwd"
+                  android:title="@string/reset_password"/>
+            <item android:id="@+id/del_acc"
+                  android:title="@string/delete_account"/>
+        </menu>
+    </item>
+    <group android:id="@+id/hikes_menu">
+        <item android:id="@+id/new_hike"
+              android:title="@string/go_on_a_hike"/>
+        <item android:id="@+id/get_hike_list"
+              android:title="@string/view_past_hikes" />
+    </group>
+    <group>
+        <item android:id="@+id/settings"
+              android:title="@string/settings"/>
+        <item android:id="@+id/logout"
+              android:title="@string/logout"/>
+    </group>
+
+</menu>

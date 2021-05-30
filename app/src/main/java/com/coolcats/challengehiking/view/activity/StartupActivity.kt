@@ -1,5 +1,6 @@
-package com.coolcats.challengehiking.view
+package com.coolcats.challengehiking.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,10 @@ class StartupActivity : AppCompatActivity() {
         binding.fragmentContainer.visibility = View.VISIBLE
         if (checkLogin()) {
             logD("Logged in: Goto Starting Page")
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent.also {
+                it.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            })
         } else {
             logD("Not Logged in: Goto Login Page")
             supportFragmentManager.beginTransaction()

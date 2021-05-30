@@ -63,7 +63,7 @@ class SignupFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val key = database.push().key ?: ""
-                    val user = User(key, emailInput, 0.0F, 0, 0)
+                    val user = User(key, emailInput, 0.0F, 0.0F, 0, 0, "")
                     preferences.edit().putString(USER_KEY, key).apply()
                     database.child(key).setValue(user)
                     FirebaseAuth.getInstance().currentUser?.sendEmailVerification()

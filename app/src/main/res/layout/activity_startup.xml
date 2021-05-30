@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/slate_grey"
-    tools:context=".view.StartupActivity">
+    tools:context=".view.activity.StartupActivity">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -20,8 +20,8 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageView
-        android:layout_width="240dp"
-        android:layout_height="120dp"
+        android:layout_width="@dimen/img_wt"
+        android:layout_height="@dimen/img_ht"
         android:src="@drawable/app_title_image"
         android:layout_margin="@dimen/std_dp"
         app:layout_constraintStart_toStartOf="parent"

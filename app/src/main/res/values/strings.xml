@@ -8,4 +8,21 @@
     <string name="new_user_sign_up">New User Sign-up</string>
     <string name="confirm_e_mail">Confirm E-mail</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="settings">Settings</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="view_information">View Information</string>
+    <string name="go_on_a_hike">Go on a Hike</string>
+    <string name="view_past_hikes">View Past Hikes</string>
+    <string name="open_drawer">Open the drawer</string>
+    <string name="close_drawer">Close the drawer</string>
+    <string name="stats">Hiking Statistics</string>
+    <string name="hike_string">Total Hikes: %d</string>
+    <string name="challenge_string">Total Challenges: %d</string>
+    <string name="miles_hiked_string">Miles on the Trail: %f</string>
+    <string name="hours_hiked_string">Hours on the Trail: %f</string>
+    <string name="prev_hike_string">Last hiked at %s</string>
+    <string name="empty_prev_loc">Last hiked in a previous life</string>
 </resources>

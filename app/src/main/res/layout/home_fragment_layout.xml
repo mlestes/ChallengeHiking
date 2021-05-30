@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/slate_grey"
+    android:clickable="true"
+    android:focusable="true">
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/std_dp"
+        android:text="@string/stats"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/account_name"
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/std_dp"
+        android:layout_marginVertical="@dimen/pb_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="test@domain.co" />
+
+    <TextView
+        android:id="@+id/hike_count"
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/account_name"
+        tools:text="Hikes: 25" />
+
+    <TextView
+        android:id="@+id/challenge_count"
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hike_count"
+        tools:text="Challenges Completed: 8" />
+
+    <TextView
+        android:id="@+id/miles_count"
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/challenge_count"
+        tools:text="Miles Hiked: 125.33" />
+
+    <TextView
+        android:id="@+id/hours_count"
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/miles_count"
+        tools:text="Hours on the Trail: 500.02" />
+
+    <TextView
+        android:id="@+id/last_hike_loc_text"
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hours_count"
+        tools:text="Last Hike: Tuscaloosa, Alabama" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
