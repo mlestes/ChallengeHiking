@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/slate_grey">
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hiking_activity"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameTitle"
+        android:id="@+id/timer_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="2:30:35"
+        android:layout_margin="@dimen/top_input_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameTitle"
+        android:id="@+id/distance_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="3.35 miles"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timer_txt" />
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:id="@+id/loc_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/currently_located"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/distance_txt" />
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameBody"
+        android:id="@+id/challenge_count_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/challenges_completed"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loc_txt" />
+
+    <ImageView
+        android:id="@+id/challenge_img"
+        android:layout_width="360dp"
+        android:layout_height="360dp"
+        android:layout_margin="@dimen/std_dp"
+        tools:src="@tools:sample/avatars"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/challenge_count_txt" />
+
+    <Button
+        android:id="@+id/start_btn"
+        android:layout_width="@dimen/btn_wt"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/start_green"
+        android:text="@string/start"
+        android:layout_marginHorizontal="@dimen/std_dp"
+        android:layout_marginBottom="@dimen/top_input_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/stop_btn"/>
+
+    <Button
+        android:id="@+id/stop_btn"
+        android:layout_width="@dimen/btn_wt"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/error_red"
+        android:textColor="@color/light_grey"
+        android:text="@string/stop"
+        android:layout_marginHorizontal="@dimen/std_dp"
+        android:layout_marginBottom="@dimen/top_input_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/start_btn"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

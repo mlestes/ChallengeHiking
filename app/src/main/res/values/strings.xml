@@ -33,4 +33,11 @@
     <string name="enter_password_to_confirm">Enter Password to Confirm</string>
     <string name="logging_out">Logging Out…</string>
     <string name="hiking">Hiking</string>
+    <string name="network_selection">Network Location:</string>
+    <string name="allow_challenges">Allow Challenges:</string>
+    <string name="hiking_activity">Going on a Hike</string>
+    <string name="currently_located">Currently Located: %s</string>
+    <string name="start">Start</string>
+    <string name="challenges_completed">Challenges Completed: %d</string>
+    <string name="stop">Stop</string>
 </resources>

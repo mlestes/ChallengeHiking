@@ -1,7 +1,5 @@
 package com.coolcats.challengehiking.view.fragment
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +10,12 @@ import com.coolcats.challengehiking.db.UserDB.Companion.getUserDB
 import com.coolcats.challengehiking.mod.User
 import com.coolcats.challengehiking.util.CHUtils.Companion.showError
 import com.coolcats.challengehiking.util.CHUtils.Companion.showMsg
-import com.coolcats.challengehiking.util.Konstants.Companion.USER_KEY
 import com.coolcats.challengehiking.util.Logger.Companion.logD
 import com.google.firebase.auth.FirebaseAuth
 
 class SignupFragment : Fragment() {
 
     private lateinit var binding: SignupFragmentLayoutBinding
-    private lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,10 +28,6 @@ class SignupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        activity?.let {
-            preferences = it.getSharedPreferences(USER_KEY, Context.MODE_PRIVATE)
-        }
 
         binding.signupSubmitBtn.setOnClickListener {
             val emailInput = binding.signupEmailInput.text.toString().trim()
@@ -64,7 +56,6 @@ class SignupFragment : Fragment() {
                 if (task.isSuccessful) {
                     val key = database.push().key ?: ""
                     val user = User(key, emailInput, 0.0F, 0.0F, 0, 0, "")
-                    preferences.edit().putString(USER_KEY, key).apply()
                     database.child(key).setValue(user)
                     FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
                     showMsg(binding.root, "Check Email for Verification Link!")

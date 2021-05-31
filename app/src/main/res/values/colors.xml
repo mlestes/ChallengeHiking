@@ -11,4 +11,5 @@
     <color name="yellow_mark">#feea20</color>
     <color name="light_grey">#ababab</color>
     <color name="error_red">#aa0000</color>
+    <color name="start_green">#22ee88</color>
 </resources>

@@ -116,6 +116,7 @@ class HomeActivity : AppCompatActivity() {
             R.id.reset_pwd -> ResetPasswordFragment()
             R.id.del_acc -> DeleteUserFragment()
             R.id.logout -> LogOutFragment()
+            R.id.settings -> SettingsFragment()
             else -> BlankFragment()
         }
 

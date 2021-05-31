@@ -14,5 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowAnimationStyle">@style/Theme.ChallengeHiking.WindowAnimation
         </item>
+        <item name="colorControlActivated">@color/yellow_mark</item>
+        <item name="colorControlNormal">@color/light_grey</item>
     </style>
 </resources>
