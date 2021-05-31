@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -12,8 +13,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.coolcats.challengehiking.R
 import com.coolcats.challengehiking.databinding.ActivityHomeBinding
+import com.coolcats.challengehiking.db.UserDB.Companion.getUser
+import com.coolcats.challengehiking.util.CHStatus
+import com.coolcats.challengehiking.util.CHUtils.Companion.showError
 import com.coolcats.challengehiking.util.Logger.Companion.logD
+import com.coolcats.challengehiking.view.fragment.BlankFragment
+import com.coolcats.challengehiking.view.fragment.FeedFragment
 import com.coolcats.challengehiking.view.fragment.HomeFragment
+import com.coolcats.challengehiking.viewmod.HikeViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -27,6 +34,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var navLayout: View
     private lateinit var currentUser: FirebaseUser
     private lateinit var fragment: Fragment
+    private val viewModel: HikeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +46,7 @@ class HomeActivity : AppCompatActivity() {
             currentUser = it
         }
 
+        getUser(currentUser)
         logD("current user email: ${currentUser.email}")
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
@@ -46,7 +55,7 @@ class HomeActivity : AppCompatActivity() {
                 android.R.anim.fade_in,
                 android.R.anim.fade_out
             )
-            .replace(R.id.main_frame, HomeFragment())
+            .replace(R.id.main_frame, BlankFragment())
             .commit()
 
         toolbar = findViewById(R.id.toolbar)
@@ -68,7 +77,21 @@ class HomeActivity : AppCompatActivity() {
 
         navLayout.findViewById<TextView>(R.id.user_name_header_text).text = currentUser.email
 
+        viewModel.statusData.observe(this, {
+            showStatus(it)
+        })
 
+    }
+
+    private fun showStatus(chStatus: CHStatus) {
+        when(chStatus) {
+            CHStatus.LOADING -> binding.progressBar.visibility = View.VISIBLE
+            CHStatus.SUCCESS -> binding.progressBar.visibility = View.GONE
+            else -> {
+                binding.progressBar.visibility = View.GONE
+                showError(binding.root, "An Error Occurred...")
+            }
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -91,10 +114,10 @@ class HomeActivity : AppCompatActivity() {
     private fun selectDrawerItem(menuItem: MenuItem) {
         fragment = when (menuItem.itemId) {
             R.id.view_acc_info -> HomeFragment()
-            else -> HomeFragment()
+            R.id.get_hike_list -> FeedFragment()
+            else -> BlankFragment()
         }
 
-        binding.mainFrame.visibility = View.VISIBLE
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 android.R.anim.fade_in,

@@ -7,18 +7,6 @@
     android:background="@color/slate_grey"
     tools:context=".view.activity.StartupActivity">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="@dimen/pb_dp"
-        android:layout_height="@dimen/pb_dp"
-        android:elevation="@dimen/std_dp"
-        android:indeterminateTint="@color/yellow_mark"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
     <ImageView
         android:layout_width="@dimen/img_wt"
         android:layout_height="@dimen/img_ht"

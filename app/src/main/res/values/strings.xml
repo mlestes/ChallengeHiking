@@ -25,4 +25,7 @@
     <string name="hours_hiked_string">Hours on the Trail: %f</string>
     <string name="prev_hike_string">Last hiked at %s</string>
     <string name="empty_prev_loc">Last hiked in a previous life</string>
+    <string name="hike_loc_string">From %1$s to %2$s</string>
+    <string name="welcome">Welcome!</string>
+    <string name="select_an_item_from_the_emnu_to_get_started">Select an item from the menu to get started!</string>
 </resources>
