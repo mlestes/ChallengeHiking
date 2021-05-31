@@ -1,5 +1,6 @@
 package com.coolcats.challengehiking.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import com.coolcats.challengehiking.databinding.LoginFragmentLayoutBinding
 import com.coolcats.challengehiking.util.CHUtils.Companion.showError
 import com.coolcats.challengehiking.util.Logger.Companion.logD
 import com.coolcats.challengehiking.util.Logger.Companion.logE
+import com.coolcats.challengehiking.view.activity.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment() {
@@ -64,7 +66,10 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful){
                     if(FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
                         logD("Logged In Successful")
-                        //go to start page
+                        val intent = Intent(this.context, HomeActivity::class.java).also {
+                            it.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
                     } else {
                         logD("Show Email Verification msm")
                         showError(binding.root, "User must verify Email first!")

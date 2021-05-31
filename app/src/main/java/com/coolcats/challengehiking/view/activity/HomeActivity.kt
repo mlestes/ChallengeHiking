@@ -115,6 +115,7 @@ class HomeActivity : AppCompatActivity() {
             R.id.get_hike_list -> FeedFragment()
             R.id.reset_pwd -> ResetPasswordFragment()
             R.id.del_acc -> DeleteUserFragment()
+            R.id.logout -> LogOutFragment()
             else -> BlankFragment()
         }
 

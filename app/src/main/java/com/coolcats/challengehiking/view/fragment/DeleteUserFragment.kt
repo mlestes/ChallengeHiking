@@ -7,6 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.coolcats.challengehiking.databinding.DeleteUserFragmentBinding
+import com.coolcats.challengehiking.db.UserDB
+import com.coolcats.challengehiking.db.UserDB.Companion.getUser
+import com.coolcats.challengehiking.db.UserDB.Companion.getUserDB
+import com.coolcats.challengehiking.db.UserDB.Companion.user
 import com.coolcats.challengehiking.util.CHUtils.Companion.showError
 import com.coolcats.challengehiking.util.CHUtils.Companion.showMsg
 import com.coolcats.challengehiking.view.activity.StartupActivity
@@ -29,6 +33,7 @@ class DeleteUserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        currentUser?.let { getUser(it) }
 
         binding.deleteSubmitBtn.setOnClickListener {
             val pwd = binding.pwdDeleteInput.text.toString()
@@ -38,8 +43,11 @@ class DeleteUserFragment : Fragment() {
                 if (task.isSuccessful) {
                     currentUser.delete().addOnCompleteListener {
                         if (it.isSuccessful) {
+                            getUserDB().child(user.id).removeValue()
                             showMsg(binding.root, "Account Deleted!")
-                            val intent = Intent(requireContext(), StartupActivity::class.java)
+                            val intent = Intent(requireContext(), StartupActivity::class.java).also {
+                                it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
                             startActivity(intent)
                         } else {
                             showError(
