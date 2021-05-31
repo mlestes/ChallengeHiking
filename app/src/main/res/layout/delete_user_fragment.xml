@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/slate_grey">
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_account"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/Theme.ChallengeHiking.FrameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/error_red"
+        android:text="***WARNING***\nTHIS ACTION IS PERMANENT!"
+        android:textAlignment="center"
+        android:layout_margin="@dimen/top_input_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/pwd_delete_input"
+        android:layout_width="@dimen/input_dp"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/light_grey"
+        android:textColor="@color/error_red"
+        android:inputType="textPassword"
+        android:hint="@string/enter_password_to_confirm"
+        android:layout_marginTop="180dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/delete_submit_btn"
+        android:layout_width="@dimen/btn_wt"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/error_red"
+        android:text="@string/submit"
+        android:textColor="@color/yellow_mark"
+        android:layout_margin="@dimen/std_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pwd_delete_input" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

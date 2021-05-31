@@ -17,9 +17,7 @@ import com.coolcats.challengehiking.db.UserDB.Companion.getUser
 import com.coolcats.challengehiking.util.CHStatus
 import com.coolcats.challengehiking.util.CHUtils.Companion.showError
 import com.coolcats.challengehiking.util.Logger.Companion.logD
-import com.coolcats.challengehiking.view.fragment.BlankFragment
-import com.coolcats.challengehiking.view.fragment.FeedFragment
-import com.coolcats.challengehiking.view.fragment.HomeFragment
+import com.coolcats.challengehiking.view.fragment.*
 import com.coolcats.challengehiking.viewmod.HikeViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -115,6 +113,8 @@ class HomeActivity : AppCompatActivity() {
         fragment = when (menuItem.itemId) {
             R.id.view_acc_info -> HomeFragment()
             R.id.get_hike_list -> FeedFragment()
+            R.id.reset_pwd -> ResetPasswordFragment()
+            R.id.del_acc -> DeleteUserFragment()
             else -> BlankFragment()
         }
 

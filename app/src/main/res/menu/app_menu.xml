@@ -11,12 +11,14 @@
                   android:title="@string/delete_account"/>
         </menu>
     </item>
-    <group android:id="@+id/hikes_menu">
+    <item android:title="Hiking">
+        <menu>
         <item android:id="@+id/new_hike"
               android:title="@string/go_on_a_hike"/>
         <item android:id="@+id/get_hike_list"
               android:title="@string/view_past_hikes" />
-    </group>
+        </menu>
+    </item>
     <group>
         <item android:id="@+id/settings"
               android:title="@string/settings"/>

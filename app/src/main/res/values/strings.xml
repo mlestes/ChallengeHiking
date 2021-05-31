@@ -28,4 +28,7 @@
     <string name="hike_loc_string">From %1$s to %2$s</string>
     <string name="welcome">Welcome!</string>
     <string name="select_an_item_from_the_emnu_to_get_started">Select an item from the menu to get started!</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="enter_password_to_confirm">Enter Password to Confirm</string>
 </resources>
