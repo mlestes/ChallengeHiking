@@ -130,6 +130,8 @@ class HomeActivity : AppCompatActivity() {
             )
             .replace(R.id.main_frame, fragment)
             .commit()
+
+        binding.drawerNavView.closeDrawers()
     }
 
     private fun setupDrawer(view: NavigationView) {

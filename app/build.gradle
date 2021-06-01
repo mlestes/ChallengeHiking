@@ -24,6 +24,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "API_KEY", CHALLENGE_HIKING_API_KEY
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

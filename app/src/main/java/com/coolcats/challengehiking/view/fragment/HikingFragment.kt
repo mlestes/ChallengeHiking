@@ -14,7 +14,6 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -26,15 +25,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.coolcats.challengehiking.R
 import com.coolcats.challengehiking.databinding.HikingFragmentLayoutBinding
+import com.coolcats.challengehiking.db.HikeDB.Companion.getHikeDB
+import com.coolcats.challengehiking.db.UserDB
+import com.coolcats.challengehiking.db.UserDB.Companion.getUserDB
+import com.coolcats.challengehiking.mod.Hike
 import com.coolcats.challengehiking.util.Konstants.Companion.CHALLENGE_SETTING
+import com.coolcats.challengehiking.util.Konstants.Companion.DEG_TO_METRE
 import com.coolcats.challengehiking.util.Konstants.Companion.DISABLED
 import com.coolcats.challengehiking.util.Konstants.Companion.ENABLED
+import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_METRE
+import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_MILE
 import com.coolcats.challengehiking.util.Konstants.Companion.LOC_SETTING
 import com.coolcats.challengehiking.util.Konstants.Companion.REQUEST_CODE
-import com.coolcats.challengehiking.util.Konstants.Companion.TIMER
+import com.coolcats.challengehiking.util.Konstants.Companion.UNIT_SETTING
+import com.coolcats.challengehiking.util.Logger.Companion.logD
 import com.coolcats.challengehiking.view.adapter.HikingLocationListener
 import com.coolcats.challengehiking.viewmod.AppViewModel
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.sqrt
 
 class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate {
 
@@ -43,11 +52,22 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
     private lateinit var binding: HikingFragmentLayoutBinding
     private lateinit var locPrefs: SharedPreferences
     private lateinit var challengePrefs: SharedPreferences
+    private lateinit var unitPrefs: SharedPreferences
     private lateinit var locationManager: LocationManager
-    private val locListener = HikingLocationListener(this)
     private lateinit var timer: Timer
+    private lateinit var prevLocation: Location
+    private lateinit var currentLocation: Location
+    private lateinit var startAddress: String
+    private lateinit var endAddress: String
+    private lateinit var time: String
+    private var millis: Long = 0
+
+    private val locListener = HikingLocationListener(this)
+
     private var doHike = false
     private var startTime: Long = 0L
+    private var distance = 0.0
+    private var challenges = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,45 +85,81 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         activity?.let {
             locPrefs = it.getSharedPreferences(LOC_SETTING, MODE_PRIVATE)
             challengePrefs = it.getSharedPreferences(CHALLENGE_SETTING, MODE_PRIVATE)
+            unitPrefs = it.getSharedPreferences(UNIT_SETTING, MODE_PRIVATE)
         }
 
         binding.timerTxt.text = getString(R.string.timer_format_txt, 0, 0, 0)
         binding.locTxt.text = getString(R.string.currently_located, "")
 
         viewModel.timerData.observe(viewLifecycleOwner, {
-            var millis = if(startTime > 0) it - startTime else 0
+            millis = if (startTime > 0) it - startTime else 0
             var secs = (millis / 1000).toInt()
             var mins = secs / 60
-            var hrs = mins / 60
+            val hrs = mins / 60
             secs %= 60
             mins %= 60
             binding.timerTxt.text = getString(R.string.timer_format_txt, hrs, mins, secs)
+            time = getString(R.string.timer_format_txt, hrs, mins, secs)
         })
 
-        var challenges = 0
         binding.challengeCountTxt.text = getString(R.string.challenges_completed, challenges)
 
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewModel.locationData.observe(viewLifecycleOwner, {
             binding.locTxt.text = getString(R.string.currently_located, it.formatted_address)
+            if (!this::startAddress.isInitialized) startAddress = it.formatted_address
         })
 
         binding.startBtn.setOnClickListener {
-            if (doHike == false) {
+            if (!doHike) {
                 startTime = System.currentTimeMillis()
-
                 beginTrackingLocation()
                 beginTimer()
                 doHike = true
-
             }
         }
 
         binding.stopBtn.setOnClickListener {
-            if (doHike == true) {
+            if (doHike) {
                 stopTrackingLocation()
                 stopTimer()
+                endAddress = viewModel.locationData.value?.formatted_address
+                    ?: if (this::startAddress.isInitialized) startAddress else ""
+                val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+                logD(format.format(Date()))
                 doHike = false
+                //TODO: submit hike to DB
+                val key = getHikeDB().child(UserDB.user.id).push().key ?: ""
+                val uom = if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED) "km" else "miles"
+                val hike = Hike(
+                    key,
+                    startAddress,
+                    endAddress,
+                    challenges,
+                    time,
+                    distance,
+                    uom,
+                    format.format(Date())
+                )
+                getHikeDB().child(UserDB.user.id).child(key).setValue(hike)
+
+                val user = UserDB.user
+                user.lastHiked = format.format(Date())
+                user.hours += millis
+                user.miles += distance.toFloat()
+                user.hikes++
+                user.challenges += challenges
+                getUserDB().child(user.id).setValue(user)
+
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                    )
+                    .replace(R.id.main_frame, HomeFragment())
+                    .commit()
             }
         }
 
@@ -124,8 +180,6 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         timer = Timer()
         timer.schedule(TimerHike(), 0, 500)
     }
-
-
 
     private fun stopTrackingLocation() {
         locationManager.removeUpdates(locListener)
@@ -157,7 +211,7 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 1000L,
-                1f,
+                1F,
                 locListener
             )
     }
@@ -193,7 +247,7 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
                             )
                         )
                             .setTitle("Permission Needed!")
-                            .setMessage("Location Permission is required for this app to function! Unistall if permissions cannot be granted.")
+                            .setMessage("Location Permission is required for this app to function! Uninstall if permissions cannot be granted.")
                             .setPositiveButton("Open Settings") { _, _ ->
                                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                 intent.data =
@@ -205,10 +259,37 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
 
     }
 
-    override fun provideLocation(location: Location) = getLocation(location)
+    override fun provideLocation(location: Location) {
+        if (this::currentLocation.isInitialized) prevLocation = currentLocation
+        currentLocation = location
+        if (this::prevLocation.isInitialized) calculateDistance(prevLocation, currentLocation)
+        if ((distance > 0.0) && (distance % 1 == 0.0)) doChallenge()
+        getLocation(currentLocation)
+    }
 
     private fun getLocation(location: Location) {
         viewModel.getAddress(location)
+    }
+
+    private fun calculateDistance(locA: Location, locB: Location) {
+        val lat = locB.latitude - locA.latitude
+        val long = locB.longitude - locA.longitude
+        val unconvertedDistance = sqrt((lat * lat) + (long * long)) //in deg
+        val metreDistance = unconvertedDistance * DEG_TO_METRE //convert to m
+        distance += if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED)
+            (metreDistance / 1000.toDouble()) //convert to km
+        else {
+            val feetDistance = metreDistance * FEET_TO_METRE //3.2804 ft/m (3280.4 ft/km)
+            (feetDistance / FEET_TO_MILE.toDouble()) //111,139 m/deg.toDouble())  //5280 ft/mi
+        }
+        val uom = if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED) "km" else "miles"
+        binding.distanceTxt.text = getString(R.string.distance_txt, distance, uom)
+        logD("Distance: $distance $uom")
+    }
+
+    private fun doChallenge() {
+        //do the challenge
+        challenges++
     }
 
 }

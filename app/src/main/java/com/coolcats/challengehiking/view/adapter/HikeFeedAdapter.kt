@@ -30,7 +30,7 @@ class HikeFeedAdapter : RecyclerView.Adapter<HikeFeedAdapter.HikeViewHolder>() {
         val hike = hikeList[position]
         binding.locTxt.text = "${hike.startLocation} to ${hike.endLocation}"
         binding.challengeTxt.text = "${hike.challenges} challenges"
-        binding.distanceTxt.text = "${hike.distance} miles"
+        binding.distanceTxt.text = "${hike.distance} ${hike.uom}"
         binding.timeTxt.text = "${hike.time} hours"
         binding.dateTxt.text = hike.date
 

@@ -21,8 +21,8 @@
     <string name="stats">Hiking Statistics</string>
     <string name="hike_string">Total Hikes: %d</string>
     <string name="challenge_string">Total Challenges: %d</string>
-    <string name="miles_hiked_string">Miles on the Trail: %f</string>
-    <string name="hours_hiked_string">Hours on the Trail: %f</string>
+    <string name="miles_hiked_string">Distance on the Trail: %.02f</string>
+    <string name="hours_hiked_string">Hours on the Trail: %.02f</string>
     <string name="prev_hike_string">Last hiked at %s</string>
     <string name="empty_prev_loc">Last hiked in a previous life</string>
     <string name="hike_loc_string">From %1$s to %2$s</string>
@@ -41,4 +41,6 @@
     <string name="challenges_completed">Challenges Completed: %d</string>
     <string name="stop">Stop</string>
     <string name="timer_format_txt">%d:%02d:%02d</string>
+    <string name="use_metric_units">Use Metric Units:</string>
+    <string name="distance_txt">%.02f %s</string>
 </resources>

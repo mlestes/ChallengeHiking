@@ -1,7 +1,7 @@
 package com.coolcats.challengehiking.network
 
+import com.coolcats.challengehiking.BuildConfig
 import com.coolcats.challengehiking.mod.LocationResponse
-import com.coolcats.challengehiking.util.Konstants.Companion.API_KEY
 import com.coolcats.challengehiking.util.Konstants.Companion.BASE_URL
 import com.coolcats.challengehiking.util.Konstants.Companion.END_POINT
 
@@ -16,8 +16,8 @@ class HikingNetwork {
 
     private val hikingRetrofit = createRetrofit().create(HikingEndPoint::class.java)
 
-    suspend fun getAddressAsync(latlng: String) : Deferred<LocationResponse> {
-        return hikingRetrofit.getAddress(latlng, API_KEY)
+    suspend fun getAddressAsync(latlng: String): Deferred<LocationResponse> {
+        return hikingRetrofit.getAddress(latlng, BuildConfig.API_KEY)
     }
 
     private fun createRetrofit(): Retrofit = Retrofit.Builder()
