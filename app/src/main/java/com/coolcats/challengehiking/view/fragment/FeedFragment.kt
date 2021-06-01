@@ -13,14 +13,14 @@ import com.coolcats.challengehiking.mod.Hike
 import com.coolcats.challengehiking.util.CHStatus
 import com.coolcats.challengehiking.util.Logger.Companion.logE
 import com.coolcats.challengehiking.view.adapter.HikeFeedAdapter
-import com.coolcats.challengehiking.viewmod.HikeViewModel
+import com.coolcats.challengehiking.viewmod.AppViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class FeedFragment : Fragment() {
 
-    private val viewModel: HikeViewModel by activityViewModels()
+    private val viewModel: AppViewModel by activityViewModels()
     private val database = getHikeDB()
     private lateinit var binding: FeedFragmentLayoutBinding
 

@@ -18,7 +18,7 @@ import com.coolcats.challengehiking.util.CHStatus
 import com.coolcats.challengehiking.util.CHUtils.Companion.showError
 import com.coolcats.challengehiking.util.Logger.Companion.logD
 import com.coolcats.challengehiking.view.fragment.*
-import com.coolcats.challengehiking.viewmod.HikeViewModel
+import com.coolcats.challengehiking.viewmod.AppViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -32,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var navLayout: View
     private lateinit var currentUser: FirebaseUser
     private lateinit var fragment: Fragment
-    private val viewModel: HikeViewModel by viewModels()
+    private val viewModel: AppViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,6 +117,7 @@ class HomeActivity : AppCompatActivity() {
             R.id.del_acc -> DeleteUserFragment()
             R.id.logout -> LogOutFragment()
             R.id.settings -> SettingsFragment()
+            R.id.new_hike -> HikingFragment()
             else -> BlankFragment()
         }
 
