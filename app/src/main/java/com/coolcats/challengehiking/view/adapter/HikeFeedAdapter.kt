@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.coolcats.challengehiking.R
 import com.coolcats.challengehiking.databinding.FeedItemLayoutBinding
 import com.coolcats.challengehiking.mod.Hike
+import java.text.DecimalFormat
 
 class HikeFeedAdapter : RecyclerView.Adapter<HikeFeedAdapter.HikeViewHolder>() {
 
@@ -28,9 +29,10 @@ class HikeFeedAdapter : RecyclerView.Adapter<HikeFeedAdapter.HikeViewHolder>() {
 
     override fun onBindViewHolder(holder: HikeViewHolder, position: Int) {
         val hike = hikeList[position]
+        val format = DecimalFormat("#.##")
         binding.locTxt.text = "${hike.startLocation} to ${hike.endLocation}"
         binding.challengeTxt.text = "${hike.challenges} challenges"
-        binding.distanceTxt.text = "${hike.distance} ${hike.uom}"
+        binding.distanceTxt.text = "${format.format(hike.distance)} ${hike.uom}"
         binding.timeTxt.text = "${hike.time} hours"
         binding.dateTxt.text = hike.date
 

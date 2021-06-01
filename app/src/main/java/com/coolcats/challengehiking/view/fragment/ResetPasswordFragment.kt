@@ -35,6 +35,10 @@ class ResetPasswordFragment: Fragment() {
             val email = currentUser?.email ?: ""
             val newPwd = binding.newPwdInput.text.toString()
             val confPwd = binding.resetPwdConf.text.toString()
+            if (currentPwd.isEmpty() || newPwd.isEmpty() || confPwd.isEmpty()){
+                showError(binding.root, "Fields must not be empty")
+                return@setOnClickListener
+            }
             val credential = EmailAuthProvider.getCredential(email, currentPwd)
             currentUser?.reauthenticate(credential)?.addOnCompleteListener {
                 if (it.isCanceled) showError(

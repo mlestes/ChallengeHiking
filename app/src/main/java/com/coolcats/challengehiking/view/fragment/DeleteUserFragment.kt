@@ -38,6 +38,10 @@ class DeleteUserFragment : Fragment() {
         binding.deleteSubmitBtn.setOnClickListener {
             val pwd = binding.pwdDeleteInput.text.toString()
             val email = currentUser?.email ?: ""
+            if (pwd.isEmpty()){
+                showError(binding.root, "Password must not be empty")
+                return@setOnClickListener
+            }
             val credential = EmailAuthProvider.getCredential(email, pwd)
             currentUser?.reauthenticate(credential)?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
