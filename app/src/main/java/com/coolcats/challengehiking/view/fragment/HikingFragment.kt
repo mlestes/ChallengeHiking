@@ -30,10 +30,10 @@ import com.coolcats.challengehiking.db.UserDB
 import com.coolcats.challengehiking.db.UserDB.Companion.getUserDB
 import com.coolcats.challengehiking.mod.Hike
 import com.coolcats.challengehiking.util.Konstants.Companion.CHALLENGE_SETTING
-import com.coolcats.challengehiking.util.Konstants.Companion.DEG_TO_METRE
+import com.coolcats.challengehiking.util.Konstants.Companion.DEG_TO_METER
 import com.coolcats.challengehiking.util.Konstants.Companion.DISABLED
 import com.coolcats.challengehiking.util.Konstants.Companion.ENABLED
-import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_METRE
+import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_METER
 import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_MILE
 import com.coolcats.challengehiking.util.Konstants.Companion.LOC_SETTING
 import com.coolcats.challengehiking.util.Konstants.Companion.REQUEST_CODE
@@ -102,7 +102,11 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
             time = getString(R.string.timer_format_txt, hrs, mins, secs)
         })
 
-        binding.challengeCountTxt.text = getString(R.string.challenges_completed, challenges)
+        if (challengePrefs.getInt(
+                CHALLENGE_SETTING,
+                DISABLED
+            ) == ENABLED
+        ) binding.challengeCountTxt.text = getString(R.string.challenges_completed, challenges)
 
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewModel.locationData.observe(viewLifecycleOwner, {
@@ -128,7 +132,6 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
                 val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
                 logD(format.format(Date()))
                 doHike = false
-                //TODO: submit hike to DB
                 val key = getHikeDB().child(UserDB.user.id).push().key ?: ""
                 val uom = if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED) "km" else "miles"
                 val hike = Hike(
@@ -263,7 +266,11 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         if (this::currentLocation.isInitialized) prevLocation = currentLocation
         currentLocation = location
         if (this::prevLocation.isInitialized) calculateDistance(prevLocation, currentLocation)
-        if ((distance > 0.0) && (distance % 1 == 0.0)) doChallenge()
+        if ((distance > 0.0) && (distance % 1 == 0.0) && challengePrefs.getInt(
+                CHALLENGE_SETTING,
+                DISABLED
+            ) == ENABLED
+        ) doChallenge()
         getLocation(currentLocation)
     }
 
@@ -275,11 +282,11 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         val lat = locB.latitude - locA.latitude
         val long = locB.longitude - locA.longitude
         val unconvertedDistance = sqrt((lat * lat) + (long * long)) //in deg
-        val metreDistance = unconvertedDistance * DEG_TO_METRE //convert to m
+        val metreDistance = unconvertedDistance * DEG_TO_METER //convert to m
         distance += if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED)
             (metreDistance / 1000.toDouble()) //convert to km
         else {
-            val feetDistance = metreDistance * FEET_TO_METRE //3.2804 ft/m (3280.4 ft/km)
+            val feetDistance = metreDistance * FEET_TO_METER //3.2804 ft/m (3280.4 ft/km)
             (feetDistance / FEET_TO_MILE.toDouble()) //111,139 m/deg.toDouble())  //5280 ft/mi
         }
         val uom = if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED) "km" else "miles"

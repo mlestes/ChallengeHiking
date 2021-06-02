@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChallengeHiking">
-        <activity android:name=".view.activity.HomeActivity"></activity>
+        <activity android:name=".view.activity.HomeActivity" />
         <activity android:name=".view.activity.StartupActivity" />
         <activity android:name=".view.activity.SplashScreen">
             <intent-filter>

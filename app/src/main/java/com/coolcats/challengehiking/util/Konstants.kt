@@ -11,9 +11,10 @@ class Konstants {
         const val DISABLED = 0
         const val BASE_URL = "https://maps.googleapis.com/maps/api/geocode/"
         const val END_POINT = "json?"
-        const val DEG_TO_METRE = 111139
-        const val FEET_TO_METRE = 3.2804
+        const val DEG_TO_METER = 111139
+        const val FEET_TO_METER = 3.2804
         const val FEET_TO_MILE = 5280
+        const val CHANNEL_ID = "HIKING_SERVICE_CHANNEL"
     }
 
 }
