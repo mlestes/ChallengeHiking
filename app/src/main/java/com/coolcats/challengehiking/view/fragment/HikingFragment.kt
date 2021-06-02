@@ -1,26 +1,18 @@
 package com.coolcats.challengehiking.view.fragment
 
-import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.*
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Context.MODE_PRIVATE
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Location
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.Settings
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.coolcats.challengehiking.R
@@ -37,9 +29,6 @@ import com.coolcats.challengehiking.util.Konstants.Companion.ENABLED
 import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_METER
 import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_MILE
 import com.coolcats.challengehiking.util.Konstants.Companion.LOC_SETTING
-import com.coolcats.challengehiking.util.Konstants.Companion.MID_HIKE_CHECK
-import com.coolcats.challengehiking.util.Konstants.Companion.REQUEST_CODE
-import com.coolcats.challengehiking.util.Konstants.Companion.TIMER_START_MILLIS
 import com.coolcats.challengehiking.util.Konstants.Companion.UNIT_SETTING
 import com.coolcats.challengehiking.util.Logger.Companion.logD
 import com.coolcats.challengehiking.util.Logger.Companion.logE
