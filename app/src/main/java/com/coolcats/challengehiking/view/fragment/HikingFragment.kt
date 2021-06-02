@@ -249,12 +249,12 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         val lat = locB.latitude - locA.latitude
         val long = locB.longitude - locA.longitude
         val unconvertedDistance = sqrt((lat * lat) + (long * long)) //in deg
-        val metreDistance = unconvertedDistance * DEG_TO_METER //convert to m
+        val metreDistance = unconvertedDistance * DEG_TO_METER //111,139 m/deg
         distance += if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED)
             (metreDistance / 1000.toDouble()) //convert to km
         else {
             val feetDistance = metreDistance * FEET_TO_METER //3.2804 ft/m (3280.4 ft/km)
-            (feetDistance / FEET_TO_MILE.toDouble()) //111,139 m/deg.toDouble())  //5280 ft/mi
+            (feetDistance / FEET_TO_MILE.toDouble()) //5280 ft/mi
         }
         val uom = if (unitPrefs.getInt(UNIT_SETTING, DISABLED) == ENABLED) "km" else "miles"
         binding.distanceTxt.text = getString(R.string.distance_txt, distance, uom)
