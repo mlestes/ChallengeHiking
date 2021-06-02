@@ -117,6 +117,7 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         binding.startBtn.setOnClickListener {
             if (!doHike) {
                 startTime = System.currentTimeMillis()
+                //TODO: start service
                 beginTrackingLocation()
                 beginTimer()
                 doHike = true
@@ -126,6 +127,7 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         binding.stopBtn.setOnClickListener {
             if (doHike) {
                 stopTrackingLocation()
+                //TODO: stop service
                 stopTimer()
                 endAddress = viewModel.locationData.value?.formatted_address
                     ?: if (this::startAddress.isInitialized) startAddress else ""

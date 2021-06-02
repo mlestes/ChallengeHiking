@@ -13,7 +13,6 @@ import com.coolcats.challengehiking.util.Konstants.Companion.LOC_SETTING
 
 class HikingService : Service() {
 
-    private lateinit var hikingDelegate: HikingDelegate
     private lateinit var locationListener: HikingLocationListener
     private lateinit var locationManager: LocationManager
     private lateinit var locPrefs : SharedPreferences
@@ -28,17 +27,13 @@ class HikingService : Service() {
         return HikingBinder()
     }
 
-    interface HikingDelegate {
-        fun trackLocation()
-    }
-
-    fun setupTracking(delegate: HikingDelegate, listener: HikingLocationListener) {
-        hikingDelegate = delegate
+    fun setupTracking(listener: HikingLocationListener) {
         locationListener = listener
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
+        beginTracking()
+        return START_NOT_STICKY
     }
 
     override fun onCreate() {
@@ -47,8 +42,13 @@ class HikingService : Service() {
         super.onCreate()
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        stopTracking()
+        super.onTaskRemoved(rootIntent)
+    }
+
     @SuppressLint("MissingPermission")
-    fun beginTracking() {
+    private fun beginTracking() {
         if (locPrefs.getInt(Konstants.LOC_SETTING, Konstants.DISABLED) == Konstants.ENABLED)
             locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
@@ -65,7 +65,7 @@ class HikingService : Service() {
             )
     }
 
-    fun stopTracking() {
+    private fun stopTracking() {
         locationManager.removeUpdates(locationListener)
     }
 }
