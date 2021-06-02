@@ -1,14 +1,24 @@
 package com.coolcats.challengehiking.view.activity
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.view.ContextThemeWrapper
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.coolcats.challengehiking.R
@@ -16,6 +26,7 @@ import com.coolcats.challengehiking.databinding.ActivityHomeBinding
 import com.coolcats.challengehiking.db.UserDB.Companion.getUser
 import com.coolcats.challengehiking.util.CHStatus
 import com.coolcats.challengehiking.util.CHUtils.Companion.showError
+import com.coolcats.challengehiking.util.Konstants
 import com.coolcats.challengehiking.util.Logger.Companion.logD
 import com.coolcats.challengehiking.view.fragment.*
 import com.coolcats.challengehiking.viewmod.AppViewModel
@@ -39,6 +50,12 @@ class HomeActivity : AppCompatActivity() {
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (ActivityCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_DENIED
+        ) requestPermission()
 
         FirebaseAuth.getInstance().currentUser?.let {
             currentUser = it
@@ -82,7 +99,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun showStatus(chStatus: CHStatus) {
-        when(chStatus) {
+        when (chStatus) {
             CHStatus.LOADING -> binding.progressBar.visibility = View.VISIBLE
             CHStatus.SUCCESS -> binding.progressBar.visibility = View.GONE
             else -> {
@@ -141,11 +158,63 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)) return true
         return super.onOptionsItemSelected(item)
     }
 
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ),
+                Konstants.REQUEST_CODE
+            )
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                Konstants.REQUEST_CODE
+            )
+        }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Konstants.REQUEST_CODE)
+            if (permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION)
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    logD("Permissions granted")
+                else {
+                    if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        requestPermission()
+                    } else {
+                        AlertDialog.Builder(
+                            ContextThemeWrapper(
+                                this,
+                                R.style.ThemeOverlay_AppCompat
+                            )
+                        )
+                            .setTitle("Permission Needed!")
+                            .setMessage("Location Permission is required for this app to function! Uninstall if permissions cannot be granted.")
+                            .setPositiveButton("Open Settings") { _, _ ->
+                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                intent.data =
+                                    Uri.fromParts("package", packageName, null)
+                                startActivity(intent)
+                            }.create().show()
+                    }
+                }
+
+    }
 
 }

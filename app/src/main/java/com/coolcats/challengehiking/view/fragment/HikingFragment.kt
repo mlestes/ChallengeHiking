@@ -4,16 +4,16 @@ import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
+import android.content.*
+import android.content.Context.BIND_AUTO_CREATE
 import android.content.Context.MODE_PRIVATE
-import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Settings
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -29,6 +29,7 @@ import com.coolcats.challengehiking.db.HikeDB.Companion.getHikeDB
 import com.coolcats.challengehiking.db.UserDB
 import com.coolcats.challengehiking.db.UserDB.Companion.getUserDB
 import com.coolcats.challengehiking.mod.Hike
+import com.coolcats.challengehiking.util.CHUtils.Companion.showError
 import com.coolcats.challengehiking.util.Konstants.Companion.CHALLENGE_SETTING
 import com.coolcats.challengehiking.util.Konstants.Companion.DEG_TO_METER
 import com.coolcats.challengehiking.util.Konstants.Companion.DISABLED
@@ -36,10 +37,14 @@ import com.coolcats.challengehiking.util.Konstants.Companion.ENABLED
 import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_METER
 import com.coolcats.challengehiking.util.Konstants.Companion.FEET_TO_MILE
 import com.coolcats.challengehiking.util.Konstants.Companion.LOC_SETTING
+import com.coolcats.challengehiking.util.Konstants.Companion.MID_HIKE_CHECK
 import com.coolcats.challengehiking.util.Konstants.Companion.REQUEST_CODE
+import com.coolcats.challengehiking.util.Konstants.Companion.TIMER_START_MILLIS
 import com.coolcats.challengehiking.util.Konstants.Companion.UNIT_SETTING
 import com.coolcats.challengehiking.util.Logger.Companion.logD
+import com.coolcats.challengehiking.util.Logger.Companion.logE
 import com.coolcats.challengehiking.view.adapter.HikingLocationListener
+import com.coolcats.challengehiking.view.adapter.HikingService
 import com.coolcats.challengehiking.viewmod.AppViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,19 +55,36 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
     private val viewModel: AppViewModel by activityViewModels()
 
     private lateinit var binding: HikingFragmentLayoutBinding
+
     private lateinit var locPrefs: SharedPreferences
     private lateinit var challengePrefs: SharedPreferences
     private lateinit var unitPrefs: SharedPreferences
+
     private lateinit var locationManager: LocationManager
-    private lateinit var timer: Timer
+    private var timer: Timer = Timer("Hike Timer")
     private lateinit var prevLocation: Location
     private lateinit var currentLocation: Location
     private lateinit var startAddress: String
     private lateinit var endAddress: String
     private lateinit var time: String
+    private lateinit var boundServiceIntent: Intent
     private var millis: Long = 0
+    private var hikingService: HikingService? = null
 
     private val locListener = HikingLocationListener(this)
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            logD("onServiceConnected Reached")
+            hikingService = (service as HikingService.HikingBinder).getServiceClass()
+            hikingService?.setupTracking(locListener)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            logE("Hiking Fragment: Error at ${name?.className} in serviceConnection")
+            showError(binding.root, "An Error Occurred")
+        }
+
+    }
 
     private var doHike = false
     private var startTime: Long = 0L
@@ -81,6 +103,11 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        boundServiceIntent = Intent(this.context, HikingService::class.java)
+        context?.bindService(boundServiceIntent, serviceConnection, BIND_AUTO_CREATE)
+
+
 
         activity?.let {
             locPrefs = it.getSharedPreferences(LOC_SETTING, MODE_PRIVATE)
@@ -102,11 +129,11 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
             time = getString(R.string.timer_format_txt, hrs, mins, secs)
         })
 
-        if (challengePrefs.getInt(
+        binding.challengeCountTxt.text = if (challengePrefs.getInt(
                 CHALLENGE_SETTING,
                 DISABLED
             ) == ENABLED
-        ) binding.challengeCountTxt.text = getString(R.string.challenges_completed, challenges)
+        ) getString(R.string.challenges_completed, challenges) else ""
 
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewModel.locationData.observe(viewLifecycleOwner, {
@@ -117,7 +144,7 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         binding.startBtn.setOnClickListener {
             if (!doHike) {
                 startTime = System.currentTimeMillis()
-                //TODO: start service
+                context?.startForegroundService(boundServiceIntent)
                 beginTrackingLocation()
                 beginTimer()
                 doHike = true
@@ -127,7 +154,8 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         binding.stopBtn.setOnClickListener {
             if (doHike) {
                 stopTrackingLocation()
-                //TODO: stop service
+                context?.stopService(boundServiceIntent)
+                context?.unbindService(serviceConnection)
                 stopTimer()
                 endAddress = viewModel.locationData.value?.formatted_address
                     ?: if (this::startAddress.isInitialized) startAddress else ""
@@ -182,7 +210,7 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
     }
 
     private fun beginTimer() {
-        timer = Timer()
+        timer = Timer("Hike Timer")
         timer.schedule(TimerHike(), 0, 500)
     }
 
@@ -190,17 +218,8 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
         locationManager.removeUpdates(locListener)
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun beginTrackingLocation() {
-        if (activity?.let {
-                ActivityCompat.checkSelfPermission(
-                    it.applicationContext,
-                    ACCESS_FINE_LOCATION
-                )
-            } == PERMISSION_GRANTED)
-            registerListener()
-        else
-            requestPermission()
+        registerListener()
     }
 
     @SuppressLint("MissingPermission")
@@ -219,49 +238,6 @@ class HikingFragment : Fragment(), HikingLocationListener.HikingLocationDelegate
                 1F,
                 locListener
             )
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION),
-            REQUEST_CODE
-        )
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE)
-            if (permissions[0] == ACCESS_FINE_LOCATION)
-                if (grantResults[0] == PERMISSION_GRANTED)
-                    registerListener()
-                else {
-                    if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
-                        requestPermission()
-                    } else {
-                        AlertDialog.Builder(
-                            ContextThemeWrapper(
-                                requireContext(),
-                                R.style.ThemeOverlay_AppCompat
-                            )
-                        )
-                            .setTitle("Permission Needed!")
-                            .setMessage("Location Permission is required for this app to function! Uninstall if permissions cannot be granted.")
-                            .setPositiveButton("Open Settings") { _, _ ->
-                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                intent.data =
-                                    Uri.fromParts("package", requireActivity().packageName, null)
-                                startActivity(intent)
-                            }.create().show()
-                    }
-                }
-
     }
 
     override fun provideLocation(location: Location) {
